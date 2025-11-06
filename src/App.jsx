@@ -40,9 +40,9 @@ function App() {
                 <div className="max-w-6xl mx-auto flex items-center justify-between w-full">
                   <div className="flex items-center">
                     <img
-                      src="/images/Vector.png"
+                      src="/images/vector.png"
                       alt="Camisa de Rua Logo"
-                      className="h-12 w-auto max-w-full object-contain" // Corrigido
+                      className="h-12 w-auto max-w-full object-contain"
                     />
                   </div>
 

@@ -1,16 +1,33 @@
-# React + Vite
+# Camisa de Rua Store
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação front-end em React + Vite com um esqueleto de backend (Express) dentro da pasta `server`.
 
-Currently, two official plugins are available:
+Este repositório contém uma loja simples (frontend) e um servidor mínimo para desenvolvimento local.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Principais comandos (na raiz):
 
-## React Compiler
+- Instalar dependências: `npm install`
+- Iniciar front-end em modo dev: `npm run dev`
+- Build de produção: `npm run build`
+- Visualizar build: `npm run preview`
+- Lint: `npm run lint`
 
-The React Compiler is not enabled on this template. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Backend (opcional):
 
-## Expanding the ESLint configuration
+- Entrar na pasta do servidor: `cd server`
+- Instalar dependências do servidor: `npm install`
+- Iniciar o servidor em modo dev: `npm run dev`
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Observações importantes:
+
+- Autenticação leve no frontend usa `localStorage` (ver `src/components/ModalAuth.jsx`). Há um usuário de teste: `teste@teste.com` / `123456`.
+- Dados de produto atualmente estão em `src/data/produtos.js`.
+- Estilos usam TailwindCSS; tokens em `tailwind.config.js`.
+
+Estrutura relevante:
+
+- `src/` — código front-end (React)
+- `public/images/` — imagens e assets públicos
+- `server/` — servidor Express mínimo (opcional)
+
+Se quiser que eu implemente endpoints reais no servidor (ex.: autenticação JWT, endpoints de produtos com persistência), me diga qual stack prefere (SQLite/Postgres/File) e eu implemento.

@@ -22,3 +22,30 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment / secrets
+.env
+.env.local
+.env.*local
+.env.* 
+
+# Coverage / test caches
+coverage/
+.nyc_output/
+jest-cache/
+
+# OS files
+Thumbs.db
+desktop.ini
+
+# Build artifacts / caches
+*.tsbuildinfo
+.cache/
+.parcel-cache/
+
+# Runtime / pid files
+pids/
+*.pid
+*.pid.lock
+
+/src/generated/prisma

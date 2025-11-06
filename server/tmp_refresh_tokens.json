@@ -1,0 +1,20 @@
+[
+  {
+    "token": "85543d72eaaaaff844a2503836101e3781d1d5b0551125016318e0be96f082183d0354e7dad5cf4f",
+    "userId": 2,
+    "expiresAt": "2025-11-09T18:41:01.989Z",
+    "revoked": false
+  },
+  {
+    "token": "76671de621b8500093951b0216a43bee6d9b0ad643d97bc594fd4f90a8b82a2dc94cfd1ed9662f57",
+    "userId": 2,
+    "expiresAt": "2025-11-09T18:41:45.617Z",
+    "revoked": false
+  },
+  {
+    "token": "d73057693561398eea11408b12e18bbcf6e7175d6870ce33f6e46f41e6dcc01720954b9818f6e6c1",
+    "userId": 2,
+    "expiresAt": "2025-11-09T18:43:24.384Z",
+    "revoked": false
+  }
+]

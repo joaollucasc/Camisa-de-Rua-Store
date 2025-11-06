@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+const API_URL = "http://localhost:4000/api";
 
 const ModalAuth = ({ isOpen, onClose, onLoginSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -38,76 +39,71 @@ const ModalAuth = ({ isOpen, onClose, onLoginSuccess }) => {
       throw new Error("Preencha todos os campos");
     }
 
-    // Usuário de teste
-    if (email === "teste@teste.com" && senha === "123456") {
-      const user = { id: "1", nome: "Usuário Teste", email: "teste@teste.com" };
-      localStorage.setItem("user", JSON.stringify(user));
-      onLoginSuccess(user);
-      return;
+    // Tenta fazer o login na API
+    const response = await fetch(`${API_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // O backend espera 'password', não 'senha'
+      body: JSON.stringify({ email: email, password: senha }),
+    });
+
+    // Pega a resposta da API
+    const data = await response.json();
+
+    // Se a API deu erro (ex: senha errada), mostre o erro
+    if (!response.ok) {
+      throw new Error(data.error || "Erro ao tentar fazer login");
     }
 
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const user = users.find((u) => u.email === email && u.senha === senha);
+    // Se deu certo, salve os dados no localStorage
+    // O backend retorna { user, accessToken }
+    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("accessToken", data.accessToken);
 
-    if (!user) {
-      throw new Error("Email ou senha incorretos");
-    }
-
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-        id: user.id,
-        nome: user.nome,
-        email: user.email,
-      })
-    );
-
-    onLoginSuccess(user);
+    // 5. Chama a função que fecha o modal e te leva pra Home
+    onLoginSuccess(data.user);
   };
 
   const handleCadastro = async () => {
     const { nome, email, senha, confirmarSenha } = formData;
 
+    // Validação dos dados
     if (!nome || !email || !senha || !confirmarSenha) {
       throw new Error("Preencha todos os campos");
     }
-
     if (senha.length < 6) {
       throw new Error("A senha deve ter pelo menos 6 caracteres");
     }
-
     if (senha !== confirmarSenha) {
       throw new Error("As senhas não coincidem");
     }
 
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const userExists = users.find((u) => u.email === email);
+    // Tenta criar a conta do usuario na API
+    const response = await fetch(`${API_URL}/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // O backend espera 'name' e 'password'
+      body: JSON.stringify({ name: nome, email: email, password: senha }),
+    });
 
-    if (userExists) {
-      throw new Error("Este email já está cadastrado");
+    // 3. Pega a resposta
+    const data = await response.json();
+
+    // 4. Se deu erro (ex: email já existe), mostre o erro
+    if (!response.ok) {
+      throw new Error(data.error || "Erro ao tentar cadastrar");
     }
+    // 5. Se deu certo, avise o usuário e mude para o login
+    alert("Cadastro realizado com sucesso! Por favor, faça o login.");
+    switchToLogin();
 
-    const newUser = {
-      id: Date.now().toString(),
-      nome,
-      email,
-      senha,
-      dataCadastro: new Date().toISOString(),
-    };
-
-    const updatedUsers = [...users, newUser];
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-        id: newUser.id,
-        nome: newUser.nome,
-        email: newUser.email,
-      })
-    );
-
-    onLoginSuccess(newUser);
+    // NOTA: O endpoint de cadastro NÃO loga o usuário automaticamente,
+    // ele só cria a conta.
+    // Pedir para ele logar é o caminho mais simples.
   };
 
   const handleChange = (e) => {
