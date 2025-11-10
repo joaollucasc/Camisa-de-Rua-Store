@@ -2,58 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { House, ShoppingCart, Ticket, Bolt } from "lucide-react";
-
-// Dados dos produtos diretamente no arquivo (temporariamente)
-const produtos = [
-  {
-    id: 1,
-    nome: "CAMISA BLOCO DA LATINHA",
-    preco: 49.1,
-    categoria: "camisas",
-  },
-  {
-    id: 2,
-    nome: "CAMISA SAMBA TRADICIONAL",
-    preco: 59.9,
-    categoria: "camisas",
-  },
-  {
-    id: 3,
-    nome: "BONÉ ESTILO RUA",
-    preco: 35.0,
-    categoria: "acessorios",
-  },
-  {
-    id: 4,
-    nome: "CAMISA NOITE CARIOCA",
-    preco: 65.0,
-    categoria: "camisas",
-  },
-  {
-    id: 5,
-    nome: "COPO CONFORTO",
-    preco: 89.9,
-    categoria: "acessorios",
-  },
-  {
-    id: 6,
-    nome: "CAMISA URBANA",
-    preco: 120.0,
-    categoria: "camisas",
-  },
-  {
-    id: 7,
-    nome: "CAMISETA BÁSICA",
-    preco: 29.9,
-    categoria: "camisetas",
-  },
-  {
-    id: 8,
-    nome: "JAQUETA COURO",
-    preco: 199.9,
-    categoria: "jaquetas",
-  },
-];
+import produtos from "../data/produtos";
 
 const ProductCard = ({ produto, onAddToCart }) => {
   const formatarPreco = (preco) => {
@@ -99,7 +48,8 @@ const ProductCard = ({ produto, onAddToCart }) => {
 const Home = ({ addToCart }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [produtosFiltrados, setProdutosFiltrados] = useState(produtos);
+  const [allProdutos, setAllProdutos] = useState([]);
+  const [produtosFiltrados, setProdutosFiltrados] = useState([]);
   const [filtroAtivo, setFiltroAtivo] = useState("todos");
 
   useEffect(() => {
@@ -109,23 +59,42 @@ const Home = ({ addToCart }) => {
       return;
     }
     setUser(userData);
+    
+    const fetchProdutos = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/api/produtos");
+        const data = await response.json();
+        if (response.ok) {
+          setAllProdutos(data.produtos || []);
+          setProdutosFiltrados(data.produtos || []);
+          aplicarFiltro("todos", data.produtos || []);
+        } else {
+          console.error("Erro ao buscar produtos:", data.error);
+        }
+      } catch (err) {
+        console.error("Falha na rede ao buscar produtos:", err);
+      }
+    };
+    
+    fetchProdutos();
+  
   }, [navigate]);
 
-  const aplicarFiltro = (categoria) => {
-    setFiltroAtivo(categoria);
+const aplicarFiltro = (categoria, produtosBase = allProdutos) => {
+  setFiltroAtivo(categoria);
 
-    if (categoria === "todos") {
-      setProdutosFiltrados(produtos);
-    } else if (categoria === "preco") {
-      const ordenados = [...produtos].sort((a, b) => a.preco - b.preco);
-      setProdutosFiltrados(ordenados);
-    } else {
-      const filtrados = produtos.filter(
-        (produto) => produto.categoria === categoria
-      );
-      setProdutosFiltrados(filtrados);
-    }
-  };
+  if (categoria === "todos") {
+    setProdutosFiltrados(produtosBase);
+  } else if (categoria === "preco") {
+    const ordenados = [...produtosBase].sort((a, b) => a.preco - b.preco);
+    setProdutosFiltrados(ordenados);
+  } else {
+    const filtrados = produtosBase.filter(
+      (produto) => produto.categoria === categoria
+    );
+    setProdutosFiltrados(filtrados);
+  }
+};
 
   const handleAddToCart = (produto) => {
     addToCart(produto);
@@ -149,15 +118,15 @@ const Home = ({ addToCart }) => {
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center">
             <img
-              src="/images/Vector.png"
+              src="/images/vector.png"
               alt="Camisa de Rua Logo"
-              className="h-12 w-19 object-cover ml-40"
+              className="h-12 w-auto object-contain ml-4"
             />
           </div>
 
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-4">
-              <span className="text-verde-neon">Olá, {user.nome}</span>
+              <span className="text-verde-neon">Olá, {user.name}</span>
               <button
                 onClick={handleLogout}
                 className="border-2 border-verde-neon text-verde-neon font-bold py-2 px-6 rounded-full hover:bg-verde-neon hover:text-verde-rua transition-colors"
